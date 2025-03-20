@@ -20,9 +20,10 @@ services:
       - progresssoft-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 5s
+      interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 30s
 
   app:
     build:
@@ -31,15 +32,24 @@ services:
     container_name: progresssoft-app
     restart: unless-stopped
     environment:
-      spring.datasource.url: jdbc:postgresql://db:${POSTGRES_DB}
-      spring.datasource.username: ${POSTGRES_USER}
-      spring.datasource.password: ${POSTGRES_PASSWORD}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
     env_file:
       - .env
     ports:
-      - "8080:8080"
+      - ${APP_PORT}:${APP_PORT}
     networks:
       - progresssoft-network
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://$${APP_HOST:localhost}:$${APP_PORT}/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+#    depends_on:
+#      db:
+#        condition: service_healthy
 
 
 volumes:
