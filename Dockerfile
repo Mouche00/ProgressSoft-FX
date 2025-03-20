@@ -7,13 +7,15 @@ WORKDIR /app
 COPY pom.xml .
 
 # Download dependencies and plugins (cache in Docker layer)
-RUN mvn dependency:go-offline -B
+RUN --mount=type=cache,target=/root/.m2 \
+    mvn dependency:go-offline -B
 
 # Copy source code
 COPY src ./src
 
 # Build package with cached dependencies
-RUN mvn package -DskipTests -B
+RUN --mount=type=cache,target=/root/.m2 \
+    mvn package -DskipTests -B
 
 # Stage 2: Runtime image
 FROM eclipse-temurin:17-jre-alpine
