@@ -48,6 +48,12 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- Spring Validation Deps -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
         <!-- Lombok Deps -->
         <dependency>
             <groupId>org.projectlombok</groupId>
