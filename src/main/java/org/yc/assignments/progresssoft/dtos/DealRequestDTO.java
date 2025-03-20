@@ -1,6 +1,8 @@
 package org.yc.assignments.progresssoft.dtos;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.yc.assignments.progresssoft.utils.annotations.ValidCurrencyCodeFormat;
 
 public record DealRequestDTO(
