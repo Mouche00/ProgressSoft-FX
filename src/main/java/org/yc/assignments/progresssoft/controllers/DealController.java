@@ -46,7 +46,7 @@ public class DealController {
 
     @GetMapping("/fetch/all")
     public ResponseEntity<SuccessResponse<List<DealResponseDTO>>> fetchAll() {
-        log.info("Received fetch all request");
+        log.info("Received fetch all deals request");
         List<DealResponseDTO> dealResponseDTOs = dealService.fetchAll();
         return successResponse(
                 HttpStatus.OK.value(),
