@@ -59,12 +59,14 @@ A RESTful API for managing deals, built with **Spring Boot**. Supports creating 
 1. Clone the repo:
    ```bash
    git clone https://github.com/Mouche00/ProgressSoft-FX.git
-   cd progressSoft-fx
+   cd ProgressSoft-FX
    ```
-   
+
 2. Copy the `.env.example` file to `.env`:
    ```bash
    make setup
+   # OR
+   cp .env.example .env
    ```
 
 2. Configure the newly created `.env` file:
