@@ -3,14 +3,13 @@ package org.yc.assignments.progresssoft.utils.helpers;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ValidationErrorsHelper {
     // Thread-local variable to hold validation errors per thread
-    private static final ThreadLocal<Map<String, Map<String, String>>> validationErrorsHolder = new ThreadLocal<>();
-
-
+    private static final ThreadLocal<Map<String, Map<String, String>>> validationErrorsHolder = ThreadLocal.withInitial(HashMap::new);
     public static void setCachedValidationErrors(Map<String, Map<String, String>> errors) {
         validationErrorsHolder.set(errors);
     }
