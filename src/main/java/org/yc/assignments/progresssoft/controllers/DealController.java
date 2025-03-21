@@ -34,6 +34,8 @@ public class DealController {
         );
     }
 
+    // An aspect is used here to validate the list of deals without causing any rollback
+    // it is according to the validation rules specified in the DealRequestDTO
     @ValidateDealList
     @PostMapping("/create/batch")
     public ResponseEntity<ApiResponse<List<DealResponseDTO>>> createBatch(@RequestBody List<DealRequestDTO> dealRequestDTOs) {

@@ -38,8 +38,8 @@ public class GlobalExceptionHandler {
         log.warn("List validation error: {}", e.getMessage());
         return mixedResponse(
                 HttpStatus.BAD_REQUEST.value(),
-                "Validation Error(s) in list, some entries have been ignored",
-                Map.of("invalid_entries", e.getInvalidEntries(), "valid_entries", e.getValidEntries())
+                "Validation error(s) in deal list, invalid deals have been ignored",
+                Map.of("invalid_deals", e.getInvalidEntries(), "valid_deals", e.getValidEntries())
         );
     }
     @ExceptionHandler(ArgumentValidationException.class)
@@ -57,10 +57,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Map<String, String>>> handleValidationException(MethodArgumentNotValidException e) {
         Map<String, String> validationErrors = extractFieldErrors(e.getBindingResult());
 
-        log.warn("Validation Error(s): {}", validationErrors);
+        log.warn("Validation failed: {}", validationErrors);
         return errorResponse(
                 HttpStatus.BAD_REQUEST.value(),
-                "Validation Error(s)",
+                "Validation failed",
                 validationErrors
         );
     }
