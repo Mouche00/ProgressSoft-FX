@@ -19,6 +19,7 @@ public class ResponseHelper {
         );
     }
 
+    // Used for mixed responses, incorporating errors and data at the same time, such as the case for batch deal creation
     public static <T> ResponseEntity<ApiResponse<Map<String, T>>> mixedResponse(int status, String message, Map<String, T> mixedData) {
         return ResponseEntity.status(status).body(
                 new ApiResponse<>(true, status, message, mixedData)

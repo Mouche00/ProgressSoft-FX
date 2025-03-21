@@ -28,16 +28,20 @@ public class DealListValidationAspect {
 
     @Around("@annotation(org.yc.assignments.progresssoft.utils.annotations.ValidateDealList)")
     public Object validateDealList(ProceedingJoinPoint joinPoint) throws Throwable {
+        log.info("Starting validation of deal list");
         List<DealRequestDTO> dealRequestDTOs = getDealRequestDTOS(joinPoint);
 
         List<DealRequestDTO> validRequestDTOs = new ArrayList<>();
         Map<String, Map<String, String>> invalidRequestDTOsWithErrors = new HashMap<>();
 
+        // For each deal in the list, validate it against the constraints present in the DealRequestDTO, and accordingly
+        // either add it to the validRequestDTOs list or the invalidRequestDTOsWithErrors map
         for (DealRequestDTO dealRequestDTO : dealRequestDTOs) {
             BindingResult bindingResult = new BeanPropertyBindingResult(dealRequestDTO, "dealRequestDTO");
             validator.validate(dealRequestDTO, bindingResult);
 
             if (bindingResult.hasErrors()) {
+                log.warn("Validation errors found for Deal #{}", dealRequestDTO.id());
                 invalidRequestDTOsWithErrors.put(
                         "Deal #" + dealRequestDTO.id(),
                         extractFieldErrors(bindingResult)
@@ -48,13 +52,19 @@ public class DealListValidationAspect {
         }
 
         if (!invalidRequestDTOsWithErrors.isEmpty()) {
+            log.warn("Some deals have validation errors, caching errors");
             setCachedValidationErrors(invalidRequestDTOsWithErrors);
+        } else {
+            log.info("All deals validated successfully");
         }
 
         try {
+            // Proceed with the filtered list valid deals
             return joinPoint.proceed(new Object[]{validRequestDTOs});
         } finally {
+            // Clear cached errors after processing
             clearCachedValidationErrors();
+            log.info("Validation process completed, cached errors cleared");
         }
     }
 
@@ -66,9 +76,11 @@ public class DealListValidationAspect {
             try {
                 dealRequestDTOs = (List<DealRequestDTO>) args[0];
             } catch (ClassCastException e) {
+                log.error("First argument must be a List of DealRequestDTO");
                 throw new ArgumentValidationException("First argument must be a List of DealRequestDTO");
             }
         } else {
+            log.error("First argument must be a non-empty List of DealRequestDTO");
             throw new ArgumentValidationException("First argument must be a non-empty List of DealRequestDTO");
         }
         return dealRequestDTOs;

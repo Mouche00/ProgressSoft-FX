@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
         return mixedResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 "Validation Error(s) in list, some entries have been ignored",
-                Map.of("invalidEntries", e.getInvalidEntries(), "validEntries", e.getValidEntries())
+                Map.of("invalid_entries", e.getInvalidEntries(), "valid_entries", e.getValidEntries())
         );
     }
     @ExceptionHandler(ArgumentValidationException.class)
