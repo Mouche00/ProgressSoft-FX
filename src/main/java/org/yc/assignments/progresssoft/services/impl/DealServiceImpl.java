@@ -10,6 +10,9 @@ import org.yc.assignments.progresssoft.services.DealService;
 import org.yc.assignments.progresssoft.utils.mappers.DealMapper;
 
 import java.util.List;
+import java.util.Map;
+
+import static org.yc.assignments.progresssoft.utils.helpers.ValidationErrorsHelper.getCachedValidationErrors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +31,8 @@ public class DealServiceImpl implements DealService {
 
     @Override
     public List<DealResponseDTO> createBatch(List<DealRequestDTO> dealRequestDTOs) {
+//        Map<String, Map<String, String>> validationErrors = getCachedValidationErrors();
+
         List<Deal> deals = dealRepository.saveAll(
                 dealMapper.requestDTOsToDeals(dealRequestDTOs)
         );
