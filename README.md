@@ -58,11 +58,16 @@ A RESTful API for managing deals, built with **Spring Boot**. Supports creating 
 
 1. Clone the repo:
    ```bash
-   git clone https://github.com/your-repo/deal-management-api.git
-   cd deal-management-api
+   git clone https://github.com/Mouche00/ProgressSoft-FX.git
+   cd progressSoft-fx
+   ```
+   
+2. Copy the `.env.example` file to `.env`:
+   ```bash
+   make setup
    ```
 
-2. Configure the `.env` file, you can use `.env.example` as a template (Optional):
+2. Configure the newly created `.env` file:
    ```properties
     POSTGRES_DB=progresssoft-fx
     POSTGRES_USER=your-username
@@ -73,6 +78,8 @@ A RESTful API for managing deals, built with **Spring Boot**. Supports creating 
 3. Build and run:
    ```bash
    make run
+   # OR
+   docker compose up -d --build
    ```
 
 4. Access the API at `http://localhost:8080/api/v1/deals`.
