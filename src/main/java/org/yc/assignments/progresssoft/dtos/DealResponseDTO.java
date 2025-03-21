@@ -12,7 +12,7 @@ public record DealResponseDTO(String id,
 
                               @JsonProperty("target_currency")
                               String targetCurrency,
-                              String amount,
+                              double amount,
 
                               @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
                               LocalDateTime timestamp) {

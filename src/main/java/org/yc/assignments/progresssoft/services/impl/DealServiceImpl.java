@@ -94,7 +94,7 @@ public class DealServiceImpl implements DealService {
     // Since the constraints for currency and id are more complex, it was elected that
     // the constraints will be validated on the service-level, utilizing the repository layer for
     // some validation operations
-    private Map<String, String> validateConstraints(DealRequestDTO dealRequestDTO) {
+    Map<String, String> validateConstraints(DealRequestDTO dealRequestDTO) {
         Map<String, String> errors = new HashMap<>();
         validateSourceCurrency(dealRequestDTO, errors);
         validateTargetCurrency(dealRequestDTO, errors);
@@ -127,11 +127,11 @@ public class DealServiceImpl implements DealService {
         }
     }
 
-    private boolean areCurrenciesDuplicates(String sourceCurrency, String targetCurrency) {
+    boolean areCurrenciesDuplicates(String sourceCurrency, String targetCurrency) {
         return sourceCurrency.equals(targetCurrency);
     }
 
-    private boolean isValidCurrency(String sourceCurrency) {
+    boolean isValidCurrency(String sourceCurrency) {
         try {
             convertCurrencyToEntity(sourceCurrency);
             return true;
