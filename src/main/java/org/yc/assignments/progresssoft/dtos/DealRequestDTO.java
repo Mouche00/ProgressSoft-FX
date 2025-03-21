@@ -10,11 +10,11 @@ public record DealRequestDTO(
         String id,
 
         @NotBlank(message = "Source currency code is required")
-        @Pattern(regexp = "^[A-Z]{3}$", message = "Currency code must be three uppercase letters long")
+        @Pattern(regexp = "^[A-Z]{3}$", message = "Currency code must be uppercase and three letters long")
         String sourceCurrency,
 
         @NotBlank(message = "Target currency code is required")
-        @Pattern(regexp = "^[A-Z]{3}$", message = "Currency code must be three uppercase letters long")
+        @Pattern(regexp = "^[A-Z]{3}$", message = "Currency code must be uppercase and three letters long")
         String targetCurrency,
 
         @NotNull(message = "Amount cannot be null")
