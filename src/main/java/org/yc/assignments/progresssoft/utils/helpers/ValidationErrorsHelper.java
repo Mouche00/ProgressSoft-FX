@@ -7,7 +7,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ValidationErrorsHelper {
+    // Thread-local variable to hold validation errors per thread
     private static final ThreadLocal<Map<String, Map<String, String>>> validationErrorsHolder = new ThreadLocal<>();
+
 
     public static void setCachedValidationErrors(Map<String, Map<String, String>> errors) {
         validationErrorsHolder.set(errors);

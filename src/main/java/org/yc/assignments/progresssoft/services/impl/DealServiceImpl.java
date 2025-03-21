@@ -1,6 +1,7 @@
 package org.yc.assignments.progresssoft.services.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.yc.assignments.progresssoft.dtos.DealRequestDTO;
 import org.yc.assignments.progresssoft.dtos.DealResponseDTO;
@@ -18,6 +19,7 @@ import static org.yc.assignments.progresssoft.utils.helpers.ValidationErrorsHelp
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DealServiceImpl implements DealService {
     private static final String INVALID_CURRENCY_MSG = "Invalid ISO 4217 currency code";
     private static final String DUPLICATE_CURRENCY_MSG = "Source and target currencies cannot be the same";
@@ -28,6 +30,7 @@ public class DealServiceImpl implements DealService {
 
     @Override
     public List<DealResponseDTO> fetchAll() {
+        log.info("Fetching all deals");
         return dealMapper.dealsToResponseDTOs(
                 dealRepository.findAll()
         );
@@ -35,6 +38,7 @@ public class DealServiceImpl implements DealService {
 
     @Override
     public DealResponseDTO create(DealRequestDTO dealRequestDTO) {
+        log.info("Creating deal with the following data: {}", dealRequestDTO);
         Map<String, String> errors = validateConstraints(dealRequestDTO);
 
         if (!errors.isEmpty()) {
@@ -45,11 +49,17 @@ public class DealServiceImpl implements DealService {
                 dealMapper.requestDTOToDeal(dealRequestDTO)
         );
 
+        log.info("Deal created successfully");
+
         return dealMapper.dealToResponseDTO(deal);
     }
 
+    // In the case of batch creation, since it is specified that no rollback should be effected,
+    // we should filter out the invalid deals and continue with persisting the valid ones
+    // and in the response we should return all the deals, both valid and invalid, for a better user/dev experience
     @Override
     public List<DealResponseDTO> createBatch(List<DealRequestDTO> dealRequestDTOs) {
+        log.info("Creating batch of deals with the following data: {}", dealRequestDTOs);
         Map<String, Map<String, String>> validationErrors = getCachedValidationErrors();
 
         dealRequestDTOs = dealRequestDTOs.stream().filter(d -> validateListConstraints(d, validationErrors)).toList();
@@ -64,6 +74,8 @@ public class DealServiceImpl implements DealService {
             throw new DealListValidationException(validationErrors, dealResponseDTOs);
         }
 
+        log.info("Deals created successfully");
+
         return dealResponseDTOs;
     }
 
@@ -73,11 +85,15 @@ public class DealServiceImpl implements DealService {
 
         if (!errors.isEmpty()) {
             validationErrors.put(dealKey, errors);
+            log.error("Validation errors in deal: {}", errors);
             return false;
         }
         return true;
     }
 
+    // Since the constraints for currency and id are more complex, it was elected that
+    // the constraints will be validated on the service-level, utilizing the repository layer for
+    // some validation operations
     private Map<String, String> validateConstraints(DealRequestDTO dealRequestDTO) {
         Map<String, String> errors = new HashMap<>();
         validateSourceCurrency(dealRequestDTO, errors);
@@ -124,6 +140,8 @@ public class DealServiceImpl implements DealService {
         }
     }
 
+    // Here we validate the currency using the Currency class, which throws an exception
+    // when retrieving the instance of and invalid currency code
     private void convertCurrencyToEntity(String currency) {
         try{
             Currency.getInstance(currency);
