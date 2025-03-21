@@ -1,22 +1,19 @@
 package org.yc.assignments.progresssoft.utils.helpers;
 
 import org.springframework.http.ResponseEntity;
-import org.yc.assignments.progresssoft.utils.responses.ErrorResponse;
-import org.yc.assignments.progresssoft.utils.responses.SuccessResponse;
-
-import java.util.List;
+import org.yc.assignments.progresssoft.utils.responses.ApiResponse;
 
 public class ResponseHelper {
 
-    public static <T> ResponseEntity<SuccessResponse<T>> successResponse(int status, String message, T data) {
+    public static <T> ResponseEntity<ApiResponse<T>> successResponse(int status, String message, T data) {
         return ResponseEntity.status(status).body(
-                new SuccessResponse<>(status, message, data)
+                new ApiResponse<>(true, status, message, data)
         );
     }
 
-    public static ResponseEntity<ErrorResponse> errorResponse(int status, String message, List<String> errors) {
+    public static <T> ResponseEntity<ApiResponse<T>> errorResponse(int status, String message, T errors) {
         return ResponseEntity.status(status).body(
-                new ErrorResponse(status, message, errors)
+                new ApiResponse<>(false, status, message, errors)
         );
     }
 }

@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import org.yc.assignments.progresssoft.dtos.DealRequestDTO;
 import org.yc.assignments.progresssoft.dtos.DealResponseDTO;
 import org.yc.assignments.progresssoft.services.DealService;
-import org.yc.assignments.progresssoft.utils.responses.SuccessResponse;
+import org.yc.assignments.progresssoft.utils.annotations.ValidateDealList;
+import org.yc.assignments.progresssoft.utils.responses.ApiResponse;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class DealController {
     private final DealService dealService;
 
     @PostMapping("/create")
-    public ResponseEntity<SuccessResponse<DealResponseDTO>> create(@RequestBody @Valid DealRequestDTO dealRequestDTO) {
+    public ResponseEntity<ApiResponse<DealResponseDTO>> create(@RequestBody @Valid DealRequestDTO dealRequestDTO) {
         log.info("Received deal creation request with the following data: {}", dealRequestDTO);
         DealResponseDTO dealResponseDTO = dealService.create(dealRequestDTO);
         return successResponse(
@@ -33,8 +34,9 @@ public class DealController {
         );
     }
 
+    @ValidateDealList
     @PostMapping("/create/batch")
-    public ResponseEntity<SuccessResponse<List<DealResponseDTO>>> createBatch(@RequestBody @Valid List<DealRequestDTO> dealRequestDTOs) {
+    public ResponseEntity<ApiResponse<List<DealResponseDTO>>> createBatch(@RequestBody List<DealRequestDTO> dealRequestDTOs) {
         log.info("Received batch deal creation request with the following data: {}", dealRequestDTOs);
         List<DealResponseDTO> dealResponseDTOs = dealService.createBatch(dealRequestDTOs);
         return successResponse(
@@ -45,7 +47,7 @@ public class DealController {
     }
 
     @GetMapping("/fetch/all")
-    public ResponseEntity<SuccessResponse<List<DealResponseDTO>>> fetchAll() {
+    public ResponseEntity<ApiResponse<List<DealResponseDTO>>> fetchAll() {
         log.info("Received fetch all deals request");
         List<DealResponseDTO> dealResponseDTOs = dealService.fetchAll();
         return successResponse(
