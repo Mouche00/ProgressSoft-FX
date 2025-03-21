@@ -7,18 +7,43 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.yc.assignments.progresssoft.exceptions.custom.ArgumentValidationException;
+import org.yc.assignments.progresssoft.exceptions.custom.DealListValidationException;
+import org.yc.assignments.progresssoft.exceptions.custom.DealValidationException;
 import org.yc.assignments.progresssoft.utils.responses.ApiResponse;
 
 import java.util.Map;
 
 import static org.yc.assignments.progresssoft.utils.helpers.ResponseHelper.errorResponse;
+import static org.yc.assignments.progresssoft.utils.helpers.ResponseHelper.mixedResponse;
 import static org.yc.assignments.progresssoft.utils.helpers.ValidationErrorsHelper.extractFieldErrors;
 
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(DealValidationException.class)
+    public ResponseEntity<ApiResponse<Map<String, String>>> handleDealValidationException(DealValidationException e) {
+
+        log.warn("Validation error: {}", e.getMessage());
+        return mixedResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                "Validation Error(s)",
+                e.getErrors()
+        );
+    }
+
+    @ExceptionHandler(DealListValidationException.class)
+    public ResponseEntity<ApiResponse<Map<String, Object>>> handleDealListValidationException(DealListValidationException e) {
+
+        log.warn("List validation error: {}", e.getMessage());
+        return mixedResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                "Validation Error(s) in list, some entries have been ignored",
+                Map.of("invalidEntries", e.getInvalidEntries(), "validEntries", e.getValidEntries())
+        );
+    }
     @ExceptionHandler(ArgumentValidationException.class)
-    public ResponseEntity<ApiResponse<String>> handleListValidationException(ArgumentValidationException e) {
+    public ResponseEntity<ApiResponse<String>> handleArgumentValidationException(ArgumentValidationException e) {
 
         log.warn("Method argument validation error: {}", e.getMessage());
         return errorResponse(
